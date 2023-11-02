@@ -1,4 +1,6 @@
  //Globales
+ let jugadores=[];
+ let puntajes =[];
  let nombre, opcion1, opcion2;
  
  let mensajesBOT = [
@@ -6,14 +8,14 @@
     "",
     "",
 ];
-
+let orden = 1;
 let contador = 0;
 let palabraAdivinar="";
 let intentosMaximos = 6;
 let frase_elegida = '';
 let intentosRestantes = intentosMaximos;
 let letrasAdivinadas = [];
-let juegoTerminado = false;
+
 let palabras = [
     "ardilla","gorila","iguana","pajaro",
     "tortuga", "tiburon", "serpiente", 
@@ -165,7 +167,7 @@ document.getElementById('send-button').addEventListener('click', function() {
         switch (contador) {
             case 0:
                     nombre = mensaje;
-                    mensajesBOT[1]= `Mucho gusto, ${nombre}, Bienvenido al Ahorcado! \n Menú \n 1. Iniciar el Juego \n 2. Instrucciones del Juego \n 3. Configuraciones del Juego`;
+                    mensajesBOT[1]= `Mucho gusto, ${nombre}, Bienvenido al Ahorcado! \n Menú \n 1. Iniciar el Juego \n 2. Instrucciones del Juego \n 3. Puntajes`;
                     break;
                 case 1:
                     opcion1 = parseInt(mensaje);
@@ -182,15 +184,18 @@ document.getElementById('send-button').addEventListener('click', function() {
                           }); 
                         break;
                     }else if (opcion1 == 3){
-                        config();
+                        puntajesj().then(() => {
+                            // La función instrucciones ha terminado, puedes realizar acciones aquí
+                            mensajesBOT[2] = `Excelente, ya vistes los puntajes. Para regresar al Menu, escribe: Menu`;
+                          }); 
                     }
                     break;
                 case 2:
                     opcion2 = mensaje;
                     if (opcion2.toLowerCase() !== "menu") {
-                        mensajesBOT[1] = "No ingresaste menu, pero igual se te regresará al Menu. \n Menú \n 1. Iniciar el Juego \n 2. Instrucciones del Juego \n 3. Configuraciones del Juego";
+                        mensajesBOT[1] = "No ingresaste menu, pero igual se te regresará al Menu. \n Menú \n 1. Iniciar el Juego \n 2. Instrucciones del Juego \n 3. Puntajes";
                     }else{
-                        mensajesBOT[1] = "Regresando a MENU... \n Menú \n 1. Iniciar el Juego \n 2. Instrucciones del Juego \n 3. Configuraciones del Juego";
+                        mensajesBOT[1] = "Regresando a MENU... \n Menú \n 1. Iniciar el Juego \n 2. Instrucciones del Juego \n 3. Puntajes";
                     }
                     contador = 0;
                     break;
@@ -210,7 +215,7 @@ function agregarMensajeUsuario(mensaje){
     mensajeNuevo.innerHTML = `
                 <div class="message-data text-right">
                     <span class="message-data-time">${horario}</span>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                    <img src="./img/avatar7.png" alt="avatar">
                 </div>
                 <div class="message other-message float-right">${mensaje}</div>
             `;
@@ -271,6 +276,13 @@ function habilitarChat2() {
     const chat2 = document.getElementById('chat2');
     chat2.style.display = 'block';
 
+    const chat3 = document.getElementById('chat3');
+    chat3.style.display = 'none';
+
+    // Muestra el chat4
+    const chat4 = document.getElementById('chat3');
+    chat4.style.display = 'none';
+
     // Muestra el chat-list
     const chatList = document.getElementById('chatlist2');
     chatList.style.display = 'block';
@@ -299,7 +311,7 @@ function agregarMensajeUsuarioI(mensaje){
     mensajeNuevo.innerHTML = `
                 <div class="message-data text-right">
                     <span class="message-data-time">${horario}</span>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                    <img src="./img/avatar7.png" alt="avatar">
                 </div>
                 <div class="message other-message float-right">${mensaje}</div>
             `;
@@ -387,7 +399,7 @@ function iniciarJuego() {
 }
 
 
-  function habilitarChat3() {
+function habilitarChat3() {
     // Oculta el chat1
     const chat1 = document.getElementById('chat1');
     chat1.style.display = 'none';
@@ -400,6 +412,10 @@ function iniciarJuego() {
     // Muestra el chat3
     const chat3 = document.getElementById('chat3');
     chat3.style.display = 'block';
+
+    // Muestra el chat4
+    const chat4 = document.getElementById('chat4');
+    chat4.style.display = 'none';
 
     // Muestra el chat-list
     const chatList = document.getElementById('chatlist3');
@@ -464,26 +480,11 @@ function agregarMensajeUsuarioJ(mensaje){
     mensajeNuevo.innerHTML = `
                 <div class="message-data text-right">
                     <span class="message-data-time">${horario}</span>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                    <img src="./imgavatar7.png" alt="avatar">
                 </div>
                 <div class="message other-message float-right">${mensaje}</div>
             `;
     chatHistory.appendChild(mensajeNuevo);
-}
-
-//Mensajes del Usuario y Manejo de Datos
-function enviarMensajeI(event) {
-    if (event.key === "Enter") {
-        const mensaje = document.getElementById('message-input3').value;
-        agregarMensajeUsuarioI(mensaje);
-        document.getElementById('message-input2').value = '';
-
-        if (mensaje.toLowerCase() !== "cerrar") {
-            agregarMensajeBotI("No dijiste cerrar, se mantendrá el Chat. Porfavor entrar al otro haciendole click.");
-        }else{
-            cerrarChat2();
-        }
-    }
 }
 
 
@@ -498,61 +499,301 @@ function jugarAhorcado(){
     agregarMensajeBotJ(`Ingrese una letra:`);
 }
 
-function imprimirproc(){
-    agregarMensajeBotJ(`PISTA: ${frase_elegida}`);
-    agregarMensajeBotJ(`VIDAS: ${intentosRestantes}`);
-    agregarMensajeBotJ(`Palabra a adivinar: ${progresoActual}`);
-}
-
 // Asociar la función enviarMensaje al botón de envío
 document.getElementById('send-button3').addEventListener('click', function() {
     const mensaje = document.getElementById('message-input3').value;
-    if (mensaje.trim() !== "") {
-        agregarMensajeUsuarioJ(mensaje);
-        document.getElementById('message-input3').value = '';
-        jugarJuego(mensaje); 
+    agregarMensajeUsuarioJ(mensaje);
+    document.getElementById('message-input3').value = '';
+    
+    
+        if (orden == 1){
+            let letra = mensaje;
+            if (letra.length !== 1 || !letra.match(/[a-z]/)) {
+                agregarMensajeBotJ('Por favor, ingresa una sola letra válida.');
+                return;
+                }
+                console.log("Si es una letra");
+                let letras =[];
+                letras[intentosRestantes]=letra;
+                let progresoActual = mostrarProgreso(palabraAdivinar, letrasAdivinadas);
+                let progresoActualSinEspacios = progresoActual.replace(/ /g, '');
+    
+                
+                if (letrasAdivinadas.includes(letra)) {
+                    agregarMensajeBotJ(`Ya has ingresado la letra ${letra} antes.`);
+                }
+                console.log("llegó aqui");
+                letrasAdivinadas.push(letra);
+                progresoActual = mostrarProgreso(palabraAdivinar, letrasAdivinadas);
+                progresoActualSinEspacios = progresoActual.replace(/ /g, '');
+                console.log("Pasó todo");
+                if (!palabraAdivinar.includes(letra)) {
+                intentosRestantes--;
+                    if (intentosRestantes == 0){
+                        agregarMensajeBotJ(`¡Has perdido! La palabra correcta era: ${palabraAdivinar}`);
+                        agregarMensajeBotJ(`Opciones: 1. Intentarlo de Nuevo, 2. Reiniciar el Juego`);
+                        agregarMensajeBotJ(`Escribe el Número de la opcion:`);
+                        orden++;
+                        console.log(orden)
+                        return;
+                    }
+                const chatHistory = document.querySelector('.history3 ul');
+                chatHistory.innerHTML = ''; // Borra todo el contenido dentro del elemento 'chatHistory'
+                agregarMensajeBotJ(`La letra ${letra} no está en la palabra.`);
+                agregarMensajeBotJ(`PISTA: ${frase_elegida}`);
+                agregarMensajeBotJ(`VIDAS: ${intentosRestantes}`);
+                agregarMensajeBotJ(`Palabra a adivinar: ${progresoActual}`);
+                agregarMensajeBotJ(`Ingrese otra letra:`);
+                return;
+                }
+                if (progresoActualSinEspacios === palabraAdivinar) {
+                    agregarMensajeBotJ(`¡Felicidades ${nombre}! Has adivinado la palabra: ${palabraAdivinar}`);
+                    agregarMensajeBotJ(`Ya puedes regresar al menú y revisar el top 5 de Puntajes`);
+                    agregarMensajeBotJ(`Opciones: 1. Intentarlo de Nuevo, 2. Reiniciar el Juego 3. Cerrar Chat.`);
+                    agregarMensajeBotJ(`Escribe el Número de la opcion:`);
+                    orden++;
+                    puntaje = (intentosRestantes / intentosMaximos)*100;
+                    topjug(nombre, puntaje);
+                    
+                    return;
+                }else if (intentosRestantes == 0){
+                    agregarMensajeBotJ(`¡Has perdido! La palabra correcta era: ${palabraAdivinar}`);
+                    agregarMensajeBotJ(`Opciones: 1. Intentarlo de Nuevo, 2. Reiniciar el Juego`);
+                    agregarMensajeBotJ(`Escribe el Número de la opcion:`);
+                    orden++;
+                    console.log(orden)
+                    return;
+                }
+                const chatHistory = document.querySelector('.history3 ul');
+                chatHistory.innerHTML = ''; // Borra todo el contenido dentro del elemento 'chatHistory'
+                agregarMensajeBotJ(`PISTA: ${frase_elegida}`);
+                agregarMensajeBotJ(`VIDAS: ${intentosRestantes}`);
+                agregarMensajeBotJ(`Palabra a adivinar: ${progresoActual}`);
+                agregarMensajeBotJ(`Ingrese otra letra:`); 
+        } else if (orden === 2){
+
+            let opcion = parseInt(mensaje);
+            let chatHistory = document.querySelector('.history3 ul');
+            switch (opcion) {
+                case 1:
+                    chatHistory.innerHTML = ''; // Borra todo el contenido dentro del elemento 'chatHistory'
+                    letrasAdivinadas = [];
+                    jugarAhorcado();
+                    
+                    orden--;
+                  break;
+                case 2:
+                    chatHistory = document.querySelector('.history3 ul');
+                    chatHistory.innerHTML = ''; // Borra todo el contenido dentro del elemento 'chatHistory'
+                    chatHistory = document.querySelector('.chat-history ul');
+                    chatHistory.innerHTML = ''; 
+                    orden--;
+                    contador = 0;
+                    letrasAdivinadas = [];
+                    cerrarChat3();
+                    iniciarMensaje();
+                    
+                  break;
+                case 3:
+                    chatHistory.innerHTML = ''; // Borra todo el contenido dentro del elemento 'chatHistory'
+                    cerrarChat3();
+                    orden--;
+                    break;
+                default:
+                  console.log("Opción no reconocida");
+              }
+        }
+            
+    
+});
+
+function cerrarChat3() {
+    // Oculta el chat1
+    const chat1 = document.getElementById('chat1');
+    chat1.style.display = 'block';
+
+    // Muestra el chat2
+    const chat3 = document.getElementById('chat3');
+    chat3.style.display = 'none';
+
+    // Muestra el chat-list
+    const chatList = document.getElementById('chatlist3');
+    chatList.style.display = 'none';
+
+    // Obtén todas las opciones en el chat-list
+    const opciones = document.querySelectorAll('.chat-list li');
+
+    // Quita la clase active de todas las opciones
+    opciones.forEach(opcion => {
+        opcion.classList.remove('active');
+    });
+
+    // Agrega la clase active a la opción seleccionada
+    const opcionSeleccionada = document.querySelector(`[data-chat="chat1"]`);
+    opcionSeleccionada.classList.add('active');
+}
+/////////////////////////////////////////////////////////////////////////////////
+///////////////////////PUNTAJES TOP 5////////////////////////////////////////////
+
+
+function topjug(jugador, puntaje) {
+    // Agregar el nuevo jugador y puntaje al final de los arrays
+    jugadores.push(jugador);
+    puntajes.push(puntaje);
+  
+    // Crear un array de objetos combinando jugadores y puntajes
+    const datos = jugadores.map((jugador, indice) => ({
+      jugador: jugador,
+      puntaje: puntajes[indice]
+    }));
+  
+    // Ordenar el array de objetos por puntaje de mayor a menor
+    datos.sort((a, b) => b.puntaje - a.puntaje);
+  
+    // Actualizar los arrays de jugadores y puntajes con los datos ordenados
+    jugadores = datos.map(item => item.jugador);
+    puntajes = datos.map(item => item.puntaje);
+  
+    // Asegurarse de que solo se mantengan los primeros 5 elementos
+    jugadores = jugadores.slice(0, 5);
+    puntajes = puntajes.slice(0, 5);
+  
+    // Guardar los datos en localStorage
+    localStorage.setItem('top5Jugadores', JSON.stringify(jugadores));
+    localStorage.setItem('top5Puntajes', JSON.stringify(puntajes));
+}
+
+function puntajesj() {
+    return new Promise((resolve) => {
+        habilitarChat4();
+        imprimirTop();
+        resolve();
+    });
+}
+
+function imprimirTop() {
+    const jugadoresEnLocalStorage = JSON.parse(localStorage.getItem('top5Jugadores'));
+    const puntajesEnLocalStorage = JSON.parse(localStorage.getItem('top5Puntajes'));
+  
+    let jguardados = jugadoresEnLocalStorage;
+    let pguardados = puntajesEnLocalStorage;
+
+    const chatHistory = document.querySelector('.history4 ul');
+    chatHistory.innerHTML = ''; // Borra todo el contenido dentro del elemento 'chatHistory'
+    if (jguardados && pguardados) {
+        agregarMensajeBotT("Top 5:");
+      for (let i = 0; i < jguardados.length; i++) {
+        agregarMensajeBotT(`${i + 1}. ${jguardados[i]}: ${pguardados[i]}`);
+        console.log(`${i + 1}. ${jguardados[i]}: ${pguardados[i]}`)
+      }
+    } else{ 
+        agregarMensajeBotT("No hay puntajes guardados");
+    }
+
+    agregarMensajeBotT("Para cerrar el chat escribe: Cerrar");
+}
+  
+// Agregar mensaje final del Bot Juego
+function agregarMensajeBotT(mensaje){
+
+    const horario = formatoTiempo();
+    const chatHistory = document.querySelector('.history4 ul');
+    const mensajeBot = document.createElement('li');
+    mensajeBot.className = 'clearfix';
+    mensajeBot.innerHTML = `
+                <div class="message-data">
+                    <span class="message-data-time">${horario}</span>
+                </div>
+                <div class="message my-message">${mensaje}</div>
+            `;
+    chatHistory.appendChild(mensajeBot);
+}
+// Agregar Mensaje de Usuario
+function agregarMensajeUsuarioT(mensaje){
+    const horario = formatoTiempo();
+    const chatHistory = document.querySelector('.history4 ul');
+    const mensajeNuevo = document.createElement('li');
+    mensajeNuevo.className = 'clearfix';
+    mensajeNuevo.innerHTML = `
+                <div class="message-data text-right">
+                    <span class="message-data-time">${horario}</span>
+                    <img src="./img/avatar7.png" alt="avatar">
+                </div>
+                <div class="message other-message float-right">${mensaje}</div>
+            `;
+    chatHistory.appendChild(mensajeNuevo);
+}
+
+function habilitarChat4() {
+    // Oculta el chat1
+    const chat1 = document.getElementById('chat1');
+    chat1.style.display = 'none';
+
+    // Oculta el chat1
+    const chat2 = document.getElementById('chat2');
+    chat2.style.display = 'none';
+
+
+    // Muestra el chat3
+    const chat3 = document.getElementById('chat3');
+    chat3.style.display = 'none';
+
+    // Muestra el chat4
+    const chat4 = document.getElementById('chat4');
+    chat4.style.display = 'block';
+
+    // Muestra el chat-list
+    const chatList = document.getElementById('chatlist4');
+    chatList.style.display = 'block';
+
+    // Obtén todas las opciones en el chat-list
+    const opciones = document.querySelectorAll('.chat-list li');
+
+    // Quita la clase active de todas las opciones
+    opciones.forEach(opcion => {
+        opcion.classList.remove('active');
+    });
+
+    // Agrega la clase active a la opción seleccionada
+    const opcionSeleccionada = document.querySelector(`[data-chat="chat4"]`);
+    opcionSeleccionada.classList.add('active');
+}
+
+// Asociar la función enviarMensaje al botón de envío
+document.getElementById('send-button4').addEventListener('click', function() {
+    const mensaje = document.getElementById('message-input4').value;
+    agregarMensajeUsuarioI(mensaje);
+    document.getElementById('message-input4').value = '';
+
+    if (mensaje.toLowerCase() !== "cerrar") {
+        agregarMensajeBotI("No dijiste cerrar, se mantendrá el Chat. Porfavor entrar al otro haciendole click.");
+    }else{
+        cerrarChat4();
     }
 });
 
-async function jugarJuego(mensaje) {
-    console.log("ENTROOOO");
-    while (!juegoTerminado) {
-      let letra = mensaje;
-      if (letra === null) {
-        // El usuario ha cancelado el juego
-        break;
-      }
-  
-      letra = letra.toLowerCase(); // Convertir la letra ingresada a minúsculas si es necesario
-  
-      if (letra.length !== 1 || !letra.match(/[a-z]/)) {
-        agregarMensajeBotJ('Por favor, ingresa una sola letra válida.');
-        continue;
-      } else if (letrasAdivinadas.includes(letra)) {
-        agregarMensajeBotJ(`Ya has ingresado la letra ${letra} antes.`);
-        continue;
-      }
-  
-      letrasAdivinadas.push(letra);
-      
-      // Aquí puedes realizar la lógica del juego, verificar si la letra es correcta, actualizar el progreso, etc.
-      
-      intentosRestantes--; // Restar un intento
-  
-      if (intentosRestantes === 0) {
-        agregarMensajeBotJ(`¡Has perdido! La palabra correcta era: ${palabraAdivinar}`);
-        juegoTerminado = true;
-      } else {
-        const progresoActual = mostrarProgreso(palabraAdivinar, letrasAdivinadas);
-        const progresoActualSinEspacios = progresoActual.replace(/ /g, '');
-        
-        if (progresoActualSinEspacios === palabraAdivinar) {
-          agregarMensajeBotJ(`¡Felicidades ${nombre}! Has adivinado la palabra: ${palabraAdivinar}`);
-          juegoTerminado = true;
-        }
-      }
-  
-      // Agregar un temporizador para permitir que el navegador responda a eventos
-      await new Promise(resolve => setTimeout(resolve, 0));
-    }
-  }
+function cerrarChat4() {
+    // Oculta el chat1
+    const chat1 = document.getElementById('chat1');
+    chat1.style.display = 'block';
+
+    // Muestra el chat2
+    const chat4 = document.getElementById('chat4');
+    chat4.style.display = 'none';
+
+    // Muestra el chat-list
+    const chatList = document.getElementById('chatlist4');
+    chatList.style.display = 'none';
+
+    // Obtén todas las opciones en el chat-list
+    const opciones = document.querySelectorAll('.chat-list li');
+
+    // Quita la clase active de todas las opciones
+    opciones.forEach(opcion => {
+        opcion.classList.remove('active');
+    });
+
+    // Agrega la clase active a la opción seleccionada
+    const opcionSeleccionada = document.querySelector(`[data-chat="chat1"]`);
+    opcionSeleccionada.classList.add('active');
+}
