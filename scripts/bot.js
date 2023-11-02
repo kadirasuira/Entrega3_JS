@@ -8,11 +8,12 @@
 ];
 
 let contador = 0;
-
+let palabraAdivinar="";
 let intentosMaximos = 6;
 let frase_elegida = '';
 let intentosRestantes = intentosMaximos;
-
+let letrasAdivinadas = [];
+let juegoTerminado = false;
 let palabras = [
     "ardilla","gorila","iguana","pajaro",
     "tortuga", "tiburon", "serpiente", 
@@ -37,7 +38,7 @@ let frases = [
     "Animal con gran altura\n" 
   ];
 
-  const palabraAdivinar = elegirPalabraAleatoria();
+  
 /////////////////////////////// Funciones Generales/////////////////////////////////////////
 // Función para cambiar de Chats
 function abrirChat(chatId) {
@@ -383,7 +384,7 @@ function iniciarJuego() {
         jugarAhorcado()
         resolve();
     });
-  }
+}
 
 
   function habilitarChat3() {
@@ -439,112 +440,34 @@ function mostrarProgreso(palabra, letrasAdivinadas) {
     return progreso;
 }
 
-// Función para jugar al ahorcado
-function jugarAhorcado(letra) {
+// Agregar mensaje final del Bot Juego
+function agregarMensajeBotJ(mensaje){
 
-    
-    const letrasAdivinadas = [];
-    while (intentosRestantes >= 0) {
-
-        let intentos = 0;
-        let letras = [];
-
-        const progresoActual = mostrarProgreso(palabraAdivinar, letrasAdivinadas);
-        const progresoActualSinEspacios = progresoActual.replace(/ /g, '');
-
-        letra[intentos] = mensaje;
-
-        if (progresoActualSinEspacios === palabraAdivinar) {
-            alert(`¡Felicidades ${nombre}! Has adivinado la palabra: ${palabraAdivinar}`);
-            alert("SISTEMA DE PUNTAJES AÚN NO DISPONIBLE, DISCULPAS :(")
-            let opcion = parseInt(prompt("QUIERES JUGAR DE NUEVO? \n 1. Regresar Menú \n 2. Jugar de Nuevo \n 3. Salir del Juego\n INGRESE EL NÚMERO DE LA OPCION:"));
-
-            if (opcion == 1){
-                menu();
-            }
-            else if (opcion == 2){
-                jugarAhorcado();
-            }
-            else if (opcion == 3){
-                return;
-            }
-            else{
-                alert("Opción inválida, terminando el programa...");
-                return;
-            }
-            
-          }
-      
-        else if (intentosRestantes == 0) {
-            alert(`¡Has perdido! La palabra correcta era: ${palabraAdivinar}`);
-            let opcion = parseInt(prompt("QUIERES JUGAR DE NUEVO? \n 1. Regresar Menú \n 2. Jugar de Nuevo \n 3. Salir del Juego\n INGRESE EL NÚMERO DE LA OPCION:"));
-
-            if (opcion == 1){
-                menu();
-            }
-            else if (opcion == 2){
-                jugarAhorcado();
-            }
-            else if (opcion == 3){
-                return;
-            }
-            else{
-                alert("Opción inválida, terminando el programa...");
-                return;
-            }
-        }
-
-        alert(`PISTA: ${frase_elegida}\nPalabra a adivinar: ${progresoActual}\nIntentos restantes: ${intentosRestantes}`);
-
-        const letraIngresada = prompt('Ingresa una letra:').toLowerCase();
-    
-        if (letraIngresada.length !== 1 || !letraIngresada.match(/[a-z]/)) {
-          alert('Por favor, ingresa una sola letra válida.');
-          continue;
-        }
-    
-        else if (letrasAdivinadas.includes(letraIngresada)) {
-          alert(`Ya has ingresado la letra ${letraIngresada} antes.`);
-          continue;
-        }
-    
-        letrasAdivinadas.push(letraIngresada);
-    
-        if (!palabraAdivinar.includes(letraIngresada)) {
-          intentosRestantes--;
-          alert(`La letra ${letraIngresada} no está en la palabra.`);
-        }
-    
-    }
-    
-}
-
-
-
-function agregarMensajeBotJ(mensaje) {
+    const horario = formatoTiempo();
     const chatHistory = document.querySelector('.history3 ul');
     const mensajeBot = document.createElement('li');
     mensajeBot.className = 'clearfix';
     mensajeBot.innerHTML = `
-        <div class="message-data">
-            <span class="message-data-time">${horario} </span>
-        </div>
-        <div class="message my-message">${mensaje}</div>
-    `;
+                <div class="message-data">
+                    <span class="message-data-time">${horario}</span>
+                </div>
+                <div class="message my-message">${mensaje}</div>
+            `;
     chatHistory.appendChild(mensajeBot);
 }
-
-function agregarMensajeUsuarioJ(mensaje) {
+// Agregar Mensaje de Usuario
+function agregarMensajeUsuarioJ(mensaje){
+    const horario = formatoTiempo();
     const chatHistory = document.querySelector('.history3 ul');
     const mensajeNuevo = document.createElement('li');
     mensajeNuevo.className = 'clearfix';
     mensajeNuevo.innerHTML = `
-        <div class="message-data text-right">
-            <span class="message-data-time">${horario}</span>
-            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-        </div>
-        <div class="message other-message float-right">${mensaje}</div>
-    `;
+                <div class="message-data text-right">
+                    <span class="message-data-time">${horario}</span>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                </div>
+                <div class="message other-message float-right">${mensaje}</div>
+            `;
     chatHistory.appendChild(mensajeNuevo);
 }
 
@@ -563,9 +486,73 @@ function enviarMensajeI(event) {
     }
 }
 
+
+function jugarAhorcado(){
+    agregarMensajeBotJ(" Iniciando Juego ");
+    agregarMensajeBotJ(" Recuerda: Introduce las letras en minúsculas y sin tildes. ");
+
+    palabraAdivinar = elegirPalabraAleatoria();
+
+    agregarMensajeBotJ(`PISTA: ${frase_elegida}`);
+    agregarMensajeBotJ(`VIDAS: ${intentosRestantes}`);
+    agregarMensajeBotJ(`Ingrese una letra:`);
+}
+
+function imprimirproc(){
+    agregarMensajeBotJ(`PISTA: ${frase_elegida}`);
+    agregarMensajeBotJ(`VIDAS: ${intentosRestantes}`);
+    agregarMensajeBotJ(`Palabra a adivinar: ${progresoActual}`);
+}
+
+// Asociar la función enviarMensaje al botón de envío
 document.getElementById('send-button3').addEventListener('click', function() {
     const mensaje = document.getElementById('message-input3').value;
-    agregarMensajeUsuarioJ(mensaje);
-    document.getElementById('message-input2').value = '';
-    jugarAhorcado(mensaje);
+    if (mensaje.trim() !== "") {
+        agregarMensajeUsuarioJ(mensaje);
+        document.getElementById('message-input3').value = '';
+        jugarJuego(mensaje); 
+    }
 });
+
+async function jugarJuego(mensaje) {
+    console.log("ENTROOOO");
+    while (!juegoTerminado) {
+      let letra = mensaje;
+      if (letra === null) {
+        // El usuario ha cancelado el juego
+        break;
+      }
+  
+      letra = letra.toLowerCase(); // Convertir la letra ingresada a minúsculas si es necesario
+  
+      if (letra.length !== 1 || !letra.match(/[a-z]/)) {
+        agregarMensajeBotJ('Por favor, ingresa una sola letra válida.');
+        continue;
+      } else if (letrasAdivinadas.includes(letra)) {
+        agregarMensajeBotJ(`Ya has ingresado la letra ${letra} antes.`);
+        continue;
+      }
+  
+      letrasAdivinadas.push(letra);
+      
+      // Aquí puedes realizar la lógica del juego, verificar si la letra es correcta, actualizar el progreso, etc.
+      
+      intentosRestantes--; // Restar un intento
+  
+      if (intentosRestantes === 0) {
+        agregarMensajeBotJ(`¡Has perdido! La palabra correcta era: ${palabraAdivinar}`);
+        juegoTerminado = true;
+      } else {
+        const progresoActual = mostrarProgreso(palabraAdivinar, letrasAdivinadas);
+        const progresoActualSinEspacios = progresoActual.replace(/ /g, '');
+        
+        if (progresoActualSinEspacios === palabraAdivinar) {
+          agregarMensajeBotJ(`¡Felicidades ${nombre}! Has adivinado la palabra: ${palabraAdivinar}`);
+          juegoTerminado = true;
+        }
+      }
+  
+      // Agregar un temporizador para permitir que el navegador responda a eventos
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+  }

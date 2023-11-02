@@ -30,7 +30,7 @@
                           <li class="clearfix active" id ="chatlist1" data-chat="chat1" onclick="abrirChat('chat1')">
                               <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
                               <div class="about">
-                                  <div class="name">EL AHORCADO</div>
+                                  <div class="name">BOT</div>
                                   <div class="status"> <i class="fa fa-circle online"></i> activo </div>                                            
                               </div>
                           </li>
@@ -41,6 +41,13 @@
                                   <div class="status"> <i class="fa fa-circle online"></i> online </div>
                               </div>
                           </li>
+                          <li class="clearfix" id ="chatlist3" data-chat="chat3" onclick="abrirChat('chat3')"  style="display: none">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
+                            <div class="about">
+                                <div class="name">EL AHORCADO</div>
+                                <div class="status"> <i class="fa fa-circle online"></i> activo </div>                                            
+                            </div>
+                        </li>
                       </ul>
                   </div>
                   <div class="chat" id="chat1">
@@ -51,7 +58,7 @@
                                       <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
                                   </a>
                                   <div class="chat-about">
-                                      <h6 class="m-b-0">EL AHORCADO</h6>
+                                      <h6 class="m-b-0">BOT</h6>
                                       <small>En línea</small>
                                   </div>
                               </div>
@@ -98,6 +105,35 @@
                                 <span class="input-group-text" id="send-button2"><i class="fa fa-send"></i></span>
                             </div>
                             <input type="text" class="form-control" id="message-input2" placeholder="Enter text here...">                                    
+                        </div>
+                    </div>
+                </div>
+                <div class="chat" id="chat3" style="display: none";>
+                    <div class="chat-header clearfix">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
+                                </a>
+                                <div class="chat-about">
+                                    <h6 class="m-b-0">EL AHORCADO</h6>
+                                    <small>En línea</small>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="chat-history history3">
+                        <ul class="m-b-0">
+                                                           
+                        </ul>
+                    </div>
+                    <div class="chat-message clearfix">
+                        <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="send-button3"><i class="fa fa-send"></i></span>
+                            </div>
+                            <input type="text" class="form-control" id="message-input3" placeholder="Enter text here...">                                    
                         </div>
                     </div>
                 </div>
